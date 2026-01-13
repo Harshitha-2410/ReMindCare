@@ -4,27 +4,50 @@ from datetime import datetime
 from django.core.files import File
 from .models import EmotionSnapshot
 
+# =====================================================
+# ENVIRONMENT GUARDS (CRITICAL FOR RENDER)
+# =====================================================
+CAMERA_ENABLED = os.getenv("ENABLE_CAMERA", "false").lower() == "true"
+
 # Folder to store snapshots locally
 SNAPSHOT_DIR = "snapshots"
 os.makedirs(SNAPSHOT_DIR, exist_ok=True)
 
+
 class VideoCamera:
     """
-    Handles video capture, emotion detection, and snapshot saving for rapid emotion changes.
+    Handles video capture, emotion detection, and snapshot saving.
+    SAFE for cloud environments (Render).
     """
+
     def __init__(self, switch_threshold=2):
-        self.video = cv2.VideoCapture(0)
+        # ❌ DO NOT open camera here
+        self.video = None
+
         self.previous_emotion = None
         self.last_switch_time = None
         self.switch_threshold = switch_threshold  # seconds
 
-    def __del__(self):
-        self.video.release()
+    # -------------------------------------------------
+    # SAFE CAMERA START (only when enabled)
+    # -------------------------------------------------
+    def start_camera(self):
+        if not CAMERA_ENABLED:
+            return False
 
+        if self.video is None:
+            self.video = cv2.VideoCapture(0)
+
+        return self.video.isOpened()
+
+    def __del__(self):
+        if self.video is not None:
+            self.video.release()
+
+    # -------------------------------------------------
+    # SNAPSHOT HANDLING
+    # -------------------------------------------------
     def capture_snapshot(self, frame, emotion):
-        """
-        Save snapshot locally and in Django DB with timestamp.
-        """
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"emotion_{emotion}_{timestamp}.jpg"
         filepath = os.path.join(SNAPSHOT_DIR, filename)
@@ -40,35 +63,48 @@ class VideoCamera:
                 snapshot = EmotionSnapshot(emotion=emotion)
                 snapshot.image.save(filename, django_file, save=True)
         except Exception as e:
-            print(f"Error saving snapshot to DB: {e}")
+            print(f"[Snapshot DB Error]: {e}")
 
+    # -------------------------------------------------
+    # MAIN FRAME LOGIC
+    # -------------------------------------------------
     def get_frame(self):
         """
-        Capture a frame, detect emotion, check for rapid switch, and return JPEG + emotion.
+        Capture frame, detect emotion, return JPEG bytes.
+        SAFE: returns immediately if camera is disabled.
         """
 
-        # 🔥 FIX-2: IMPORT INSIDE FUNCTION (NOT AT TOP)
-        from .helpers.emotion_detector import detect_emotion
+        # 🚫 CAMERA DISABLED (Render-safe)
+        if not CAMERA_ENABLED:
+            return None, "Camera disabled"
+
+        # Start camera safely
+        if not self.start_camera():
+            return None, "Camera unavailable"
 
         success, frame = self.video.read()
         if not success:
-            return None, None
+            return None, "Frame read failed"
 
-        # Detect emotion
+        # 🔥 LAZY IMPORT (prevents TensorFlow load at startup)
+        from .helpers.emotion_detector import detect_emotion
+
         emotion = detect_emotion(frame)
 
-        # Check for rapid emotion switch
+        # Detect rapid emotion switch
         now = datetime.now()
-        if self.previous_emotion is not None and emotion != self.previous_emotion:
-            if self.last_switch_time is None or (
-                now - self.last_switch_time
-            ).total_seconds() <= self.switch_threshold:
+        if self.previous_emotion and emotion != self.previous_emotion:
+            if (
+                self.last_switch_time is None
+                or (now - self.last_switch_time).total_seconds()
+                <= self.switch_threshold
+            ):
                 self.capture_snapshot(frame, emotion)
             self.last_switch_time = now
 
         self.previous_emotion = emotion
 
-        # Draw emotion text on video frame
+        # Draw emotion label
         cv2.putText(
             frame,
             f"Emotion: {emotion}",
@@ -79,6 +115,5 @@ class VideoCamera:
             2,
         )
 
-        # Encode frame as JPEG
         _, jpeg = cv2.imencode(".jpg", frame)
         return jpeg.tobytes(), emotion
