@@ -1,9 +1,7 @@
-
 import cv2
 import os
 from datetime import datetime
 from django.core.files import File
-from .helpers.emotion_detector import detect_emotion
 from .models import EmotionSnapshot
 
 # Folder to store snapshots locally
@@ -48,31 +46,39 @@ class VideoCamera:
         """
         Capture a frame, detect emotion, check for rapid switch, and return JPEG + emotion.
         """
+
+        # 🔥 FIX-2: IMPORT INSIDE FUNCTION (NOT AT TOP)
+        from .helpers.emotion_detector import detect_emotion
+
         success, frame = self.video.read()
         if not success:
             return None, None
 
-        # Detect emotion using DeepFace
+        # Detect emotion
         emotion = detect_emotion(frame)
 
         # Check for rapid emotion switch
         now = datetime.now()
         if self.previous_emotion is not None and emotion != self.previous_emotion:
-            # If last switch was within threshold or first switch
-            if self.last_switch_time is None or (now - self.last_switch_time).total_seconds() <= self.switch_threshold:
+            if self.last_switch_time is None or (
+                now - self.last_switch_time
+            ).total_seconds() <= self.switch_threshold:
                 self.capture_snapshot(frame, emotion)
             self.last_switch_time = now
 
         self.previous_emotion = emotion
 
         # Draw emotion text on video frame
-        cv2.putText(frame, f"Emotion: {emotion}",
-                    (20, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (0, 255, 0),
-                    2)
+        cv2.putText(
+            frame,
+            f"Emotion: {emotion}",
+            (20, 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+        )
 
         # Encode frame as JPEG
-        _, jpeg = cv2.imencode('.jpg', frame)
+        _, jpeg = cv2.imencode(".jpg", frame)
         return jpeg.tobytes(), emotion
