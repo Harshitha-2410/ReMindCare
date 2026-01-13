@@ -208,3 +208,17 @@ def add_family_contact(request):
             photo=request.FILES.get("photo")
         )
     return redirect("family")
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def chatbot_api(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        message = data.get("message", "")
+        return JsonResponse({"reply": f"You said: {message}"})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
