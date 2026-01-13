@@ -433,12 +433,12 @@ def register(request):
             email=email,
             password=password1
         )
-        Patient.objects.create(
-            user=user,
-            first_name="",
-            last_name="",
-            age=1
-        )
+        # Patient.objects.create(
+        #     user=user,
+        #     first_name="",
+        #     last_name="",
+        #     age=1
+        # )
 
         login(request, user)
         return redirect("dashboard")
