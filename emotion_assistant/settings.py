@@ -221,7 +221,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.facebook",
 
     # Local apps
-    "app",
+    # "app",
+    "app.apps.AppConfig",
+
 ]
 
 SITE_ID = 1
