@@ -174,11 +174,11 @@ import google.generativeai as genai
 # # ✅ Configure your API key (set this properly in settings or env)
 # genai.configure(api_key="AIzaSyAzNXYqN18wqOfZ6YgV3cfrQjwcZlm5xIQ")
 
-from openai import OpenAI
+# from openai import OpenAI
 
-import os
+# import os
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 
