@@ -13,19 +13,58 @@ from django.contrib.auth.models import User
 
 from django.db import models
 
+# class Patient(models.Model):
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='patients'
+#     )
+#     first_name = models.CharField(max_length=100)
+#     last_name = models.CharField(max_length=100)
+#     dob = models.DateField()
+#     age = models.IntegerField()
+#     room = models.CharField(max_length=50)
+#     photo = models.ImageField(upload_to='patients/', blank=True, null=True)
+#     notes = models.TextField(blank=True)
+#     SUPPORT_MODES = [
+#         ('alz', 'Alzheimer’s / Memory Support'),
+#         ('asd', 'Autism Support'),
+#         ('adhd', 'ADHD Support'),
+#         ('elder', 'Elderly Care'),
+#         ('general', 'General Wellness'),
+#     ]
+#     support_mode = models.CharField(
+#         max_length=20,
+#         choices=SUPPORT_MODES,
+#         default='general'
+#     )
+#     voice_enabled = models.BooleanField(default=True)
+#     speech_speed = models.IntegerField(
+#         choices=[(1, 'Slow'), (2, 'Normal')],
+#         default=2
+#     )    
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"{self.first_name} {self.last_name}"
+
 class Patient(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='patients'
     )
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    dob = models.DateField()
-    age = models.IntegerField()
-    room = models.CharField(max_length=50)
+
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
+
+    dob = models.DateField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    room = models.CharField(max_length=50, blank=True)
+
     photo = models.ImageField(upload_to='patients/', blank=True, null=True)
     notes = models.TextField(blank=True)
+
     SUPPORT_MODES = [
         ('alz', 'Alzheimer’s / Memory Support'),
         ('asd', 'Autism Support'),
@@ -33,20 +72,25 @@ class Patient(models.Model):
         ('elder', 'Elderly Care'),
         ('general', 'General Wellness'),
     ]
+
     support_mode = models.CharField(
         max_length=20,
         choices=SUPPORT_MODES,
         default='general'
     )
+
     voice_enabled = models.BooleanField(default=True)
+
     speech_speed = models.IntegerField(
         choices=[(1, 'Slow'), (2, 'Normal')],
         default=2
-    )    
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.first_name or self.user.username
+
 
 
 class Snapshot(models.Model):
