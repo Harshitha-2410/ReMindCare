@@ -147,15 +147,15 @@ class Medication(models.Model):
 from django.db import models
 from django.contrib.auth.models import User
 
-class FamilyContact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    relation = models.CharField(max_length=50)
-    phone = models.CharField(max_length=20)
-    photo = models.ImageField(upload_to="family/", blank=True, null=True)
+# class FamilyContact(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=100)
+#     relation = models.CharField(max_length=50)
+#     phone = models.CharField(max_length=20)
+#     photo = models.ImageField(upload_to="family/", blank=True, null=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
     
 from django.db import models
 from django.conf import settings
@@ -220,14 +220,14 @@ class UserProfile(models.Model):
         return self.user.username
 
 
-class EmergencyContact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    relation = models.CharField(max_length=50)
-    phone = models.CharField(max_length=20)
+# class EmergencyContact(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=100)
+#     relation = models.CharField(max_length=50)
+#     phone = models.CharField(max_length=20)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 
@@ -235,53 +235,53 @@ class EmergencyContact(models.Model):
 
 from django.db import models
 from django.contrib.auth.models import User
-class Profile(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='profile'
-    )
+# class Profile(models.Model):
+#     user = models.OneToOneField(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='profile'
+#     )
 
-    phone = models.CharField(max_length=15, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+#     phone = models.CharField(max_length=15, blank=True)
+#     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
-    playback_speed = models.CharField(
-        max_length=10,
-        choices=[
-            ('Slow', 'Slow'),
-            ('Normal', 'Normal'),
-            ('Fast', 'Fast')
-        ],
-        default='Normal'
-    )
+#     playback_speed = models.CharField(
+#         max_length=10,
+#         choices=[
+#             ('Slow', 'Slow'),
+#             ('Normal', 'Normal'),
+#             ('Fast', 'Fast')
+#         ],
+#         default='Normal'
+#     )
 
-    dark_mode = models.BooleanField(default=False)
+#     dark_mode = models.BooleanField(default=False)
 
-    font_size = models.CharField(
-        max_length=10,
-        choices=[
-            ('Small', 'Small'),
-            ('Medium', 'Medium'),
-            ('Large', 'Large')
-        ],
-        default='Medium'
-    )
+#     font_size = models.CharField(
+#         max_length=10,
+#         choices=[
+#             ('Small', 'Small'),
+#             ('Medium', 'Medium'),
+#             ('Large', 'Large')
+#         ],
+#         default='Medium'
+#     )
 
-    def __str__(self):
-        return f"{self.user.username}'s Profile"
-class EmergencyContact(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='emergency_contacts'
-    )
+#     def __str__(self):
+#         return f"{self.user.username}'s Profile"
+# class EmergencyContact(models.Model):
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='emergency_contacts'
+#     )
 
-    name = models.CharField(max_length=100)
-    relation = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15)
+#     name = models.CharField(max_length=100)
+#     relation = models.CharField(max_length=50)
+#     phone = models.CharField(max_length=15)
 
-    def __str__(self):
-        return f"{self.name} ({self.relation})"
+#     def __str__(self):
+#         return f"{self.name} ({self.relation})"
 
 
 
@@ -439,3 +439,6 @@ class FamilyContact(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.relation})"
+
+
+
