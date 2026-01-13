@@ -411,12 +411,53 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 
+# def register(request):
+#     if request.method == "POST":
+#         username = request.POST["username"]
+#         email = request.POST["email"]
+#         password1 = request.POST["password1"]
+#         password2 = request.POST["password2"]
+
+#         if password1 != password2:
+#             return render(request, "auth/register.html", {
+#                 "error": "Passwords do not match"
+#             })
+
+#         if User.objects.filter(username=username).exists():
+#             return render(request, "auth/register.html", {
+#                 "error": "Username already exists"
+#             })
+
+#         user = User.objects.create_user(
+#             username=username,
+#             email=email,
+#             password=password1
+#         )
+#         Patient.objects.create(
+#             user=user,
+#             first_name="",
+#             last_name="",
+#             age=1
+#         )
+
+#         login(request, user)
+#         return redirect("dashboard")
+
+#     return render(request, "auth/register.html")
+
+from datetime import date
+
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
+
+        first_name = request.POST["first_name"]
+        last_name = request.POST["last_name"]
+        dob = request.POST["dob"]
+        room = request.POST["room"]
 
         if password1 != password2:
             return render(request, "auth/register.html", {
@@ -433,17 +474,27 @@ def register(request):
             email=email,
             password=password1
         )
-        # Patient.objects.create(
-        #     user=user,
-        #     first_name="",
-        #     last_name="",
-        #     age=1
-        # )
 
-        login(request, user)
+        dob_date = date.fromisoformat(dob)
+        today = date.today()
+        age = today.year - dob_date.year - (
+            (today.month, today.day) < (dob_date.month, dob_date.day)
+        )
+
+        Patient.objects.create(
+            user=user,
+            first_name=first_name,
+            last_name=last_name,
+            dob=dob,
+            age=age,
+            room=room,
+        )
+
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect("dashboard")
 
     return render(request, "auth/register.html")
+
 
 
 @login_required
