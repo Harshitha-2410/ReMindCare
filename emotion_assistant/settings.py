@@ -221,8 +221,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.facebook",
 
     # Local apps
-    # "app",
-    "app.apps.AppConfig",
+    "app",
 
 ]
 
