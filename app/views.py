@@ -661,7 +661,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Medication
 
 # ⚠️ Set Tesseract path (Windows)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 @login_required
 def medication_page(request):
