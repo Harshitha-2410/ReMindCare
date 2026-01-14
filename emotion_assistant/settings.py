@@ -182,14 +182,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key")
 
-# DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
-DEBUG= True
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
+# DEBUG= True
 
+# ALLOWED_HOSTS = [
+#     ".onrender.com",
+#     "localhost",
+#     "127.0.0.1",
+# ]
 ALLOWED_HOSTS = [
-    ".onrender.com",
+    "remindcare-20.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
+
 
 
 # -------------------------------------------------
@@ -340,13 +346,29 @@ MEDIA_ROOT = BASE_DIR / "media"
 # -------------------------------------------------
 # SECURITY (FIXED CSRF ERROR)
 # -------------------------------------------------
+# CSRF_TRUSTED_ORIGINS = [
+#     origin for origin in os.environ.get(
+#         "CSRF_TRUSTED_ORIGINS", ""
+#     ).split(",") if origin
+# ]
 CSRF_TRUSTED_ORIGINS = [
-    origin for origin in os.environ.get(
-        "CSRF_TRUSTED_ORIGINS", ""
-    ).split(",") if origin
+    "https://remindcare-20.onrender.com",
 ]
 
+
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+SECURE_SSL_REDIRECT = True
+
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+
 
 # -------------------------------------------------
 # DEFAULT FIELD
