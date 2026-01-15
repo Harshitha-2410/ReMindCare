@@ -191,7 +191,7 @@ DEBUG= True
 #     "127.0.0.1",
 # ]
 ALLOWED_HOSTS = [
-    "remindcare-27.onrender.com",
+    "remindcare-29.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
@@ -352,7 +352,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 #     ).split(",") if origin
 # ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://remindcare-27.onrender.com",
+    "https://remindcare-29.onrender.com",
 ]
 
 
