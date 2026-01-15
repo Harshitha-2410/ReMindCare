@@ -191,7 +191,7 @@ DEBUG= True
 #     "127.0.0.1",
 # ]
 ALLOWED_HOSTS = [
-    "remindcare-29.onrender.com",
+    "remindcare-30.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
@@ -224,7 +224,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.google",
     # "allauth.socialaccount.providers.facebook",
 
     # Local apps
@@ -352,7 +352,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 #     ).split(",") if origin
 # ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://remindcare-29.onrender.com",
+    "https://remindcare-30.onrender.com",
 ]
 
 
